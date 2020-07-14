@@ -4,6 +4,8 @@
 # @Author  : 一叶知秋
 # @File    : routes.py
 # @Software: PyCharm
+from datetime import datetime
+
 from flask import render_template, redirect, flash, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
@@ -83,6 +85,13 @@ def user(username):
         {'author': user, 'body': 'Test post #2'}
     ]
     return render_template('user.html', user=user, posts=posts)
+
+
+@app.before_request
+def before_request():
+    if current_user.is_anthenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commite()
 
 
 @app.route('/logout')
